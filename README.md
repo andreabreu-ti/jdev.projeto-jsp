@@ -4,3 +4,14 @@
 Servlets com JavaServer Pages (JSP) e JDBC com SQL e Java
 
 # Sobre o Projeto
+
+# Tecnologias utilizadas
+## Back end
+- Java
+- Maven
+- 
+## Front end
+- HTML / CSS / JS / TypeScript
+
+## Data Base
+- Banco de dados: Postgresql

@@ -6,6 +6,18 @@
   <packaging>war</packaging>
   <name>Curso JSP</name>
   <description>JDev Treinamento</description>
+  
+  <dependencies>
+	  
+	<dependency>
+    	<groupId>org.postgresql</groupId>
+   	 	<artifactId>postgresql</artifactId>
+    	<version>42.2.23</version> <!-- Certifique-se de usar a versão mais recente disponível -->
+	</dependency>
+
+	  
+  </dependencies>
+    
   <build>
     <plugins>
       <plugin>

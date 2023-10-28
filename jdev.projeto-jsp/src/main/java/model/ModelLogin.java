@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class ModelLogin implements Serializable{
 
 	/**
-	 *	Para compilação das classes 
+	 *	serialVersionUID Para compilação das classes 
 	 */
 	private static final long serialVersionUID = 1L;
 	

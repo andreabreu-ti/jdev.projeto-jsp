@@ -19,4 +19,13 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <filter>
+    <display-name>FilterAutenticacao</display-name>
+    <filter-name>FilterAutenticacao</filter-name>
+    <filter-class>filter.FilterAutenticacao</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>FilterAutenticacao</filter-name>
+    <url-pattern>/FilterAutenticacao</url-pattern>
+  </filter-mapping>
 </web-app>

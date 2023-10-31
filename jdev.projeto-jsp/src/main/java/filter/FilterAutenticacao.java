@@ -26,6 +26,11 @@ import jakarta.servlet.http.HttpSession;
 @WebFilter(urlPatterns = {"/principal/*"})
 public class FilterAutenticacao extends HttpFilter implements Filter {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private static Connection connection;
 
 	/**
@@ -105,6 +110,11 @@ public class FilterAutenticacao extends HttpFilter implements Filter {
 		} catch (Exception e) {
 			// TODO: Exceção do sistema
 			e.printStackTrace();
+			
+			RequestDispatcher redirecionar = request.getRequestDispatcher("erro.jsp");
+			request.setAttribute("msg", e.getMessage());
+			redirecionar.forward(request, response);
+			
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {

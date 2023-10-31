@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.IOException;
 
+import dao.DAOLoginRepository;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +19,8 @@ import model.ModelLogin;
 public class ServletLogin extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private DAOLoginRepository daoLoginRepository = new DAOLoginRepository();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -44,49 +47,55 @@ public class ServletLogin extends HttpServlet {
 		String senha = request.getParameter("senha");
 		String url   = request.getParameter("url");	//Vem da index.jsp
 		
-		if (login != null && !login.isEmpty() && senha != null && !senha.isEmpty()) {
-			
-			ModelLogin modelLogin = new ModelLogin();
-			modelLogin.setLogin(login);
-			modelLogin.setSenha(senha);
-			
-			/**
-			 * 	Simulação de Login
-			 */
-			
-			if (modelLogin.getLogin().equalsIgnoreCase("admin") 
-					&& modelLogin.getSenha().equalsIgnoreCase("admin")) {
+		try {
+			if (login != null && !login.isEmpty() && senha != null && !senha.isEmpty()) {
+				
+				ModelLogin modelLogin = new ModelLogin();
+				modelLogin.setLogin(login);
+				modelLogin.setSenha(senha);
 				
 				/**
-				 * Se o login deu certo...colocar u atributo de sessao passando o modeloLogin (Objeto)
+				 * 	Simulação de Login
 				 */
-				request.getSession().setAttribute("usuario", modelLogin.getLogin());
 				
-				/**
-				 * Colocou na seção, redirecionar para o principal.jsp
-				 * Realizar uma validação da url antes de redirecionar
-				 */
-				if (url == null || url.equals("null")) {
-					url = "principal/principal.jsp";
+				if (daoLoginRepository.validarAutenticaca(modelLogin)) {
+					
+					/**
+					 * Se o login deu certo...colocar u atributo de sessao passando o modeloLogin (Objeto)
+					 */
+					request.getSession().setAttribute("usuario", modelLogin.getLogin());
+					
+					/**
+					 * Colocou na seção, redirecionar para o principal.jsp
+					 * Realizar uma validação da url antes de redirecionar
+					 */
+					if (url == null || url.equals("null")) {
+						url = "principal/principal.jsp";
+					}
+					
+					RequestDispatcher redirecionar = request.getRequestDispatcher(url);
+					redirecionar.forward(request, response);
+					
+				}else {
+					/**
+					 * Se não for o usuário e senha admin, redirecionar para a tela com mensagem de erro
+					 */
+					RequestDispatcher redirecionar = request.getRequestDispatcher("/index.jsp");
+					request.setAttribute("msg", "Informe o login e senha Corretamente. msg2");
+					redirecionar.forward(request, response);
+					
 				}
 				
-				RequestDispatcher redirecionar = request.getRequestDispatcher(url);
-				redirecionar.forward(request, response);
 				
 			}else {
-				/**
-				 * Se não for o usuário e senha admin, redirecionar para a tela com mensagem de erro
-				 */
-				RequestDispatcher redirecionar = request.getRequestDispatcher("/index.jsp");
-				request.setAttribute("msg", "Informe o login e senha ocrretamente. msg2");
+				RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
+				request.setAttribute("msg", "Informe o login e senha Corretamente. msg1");
 				redirecionar.forward(request, response);
-				
 			}
-			
-			
-		}else {
-			RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("msg", "Informe o login e senha ocrretamente. msg1");
+		} catch (Exception e) {
+			e.printStackTrace();
+			RequestDispatcher redirecionar = request.getRequestDispatcher("erro.jsp");
+			request.setAttribute("msg", e.getMessage());
 			redirecionar.forward(request, response);
 		}
 		

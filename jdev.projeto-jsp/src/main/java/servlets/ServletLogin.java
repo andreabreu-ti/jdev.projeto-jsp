@@ -35,6 +35,20 @@ public class ServletLogin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String acao = request.getParameter("acao");
+
+		/**
+		 * Invalida a sessão, apaga todos os atributos colocado na sessão
+		 */
+		if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("logou")) {
+			request.getSession().invalidate();
+			RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
+			redirecionar.forward(request, response);
+			
+		}else {
+			doPost(request, response);
+		}
+		
 	}
 
 	/**
@@ -61,7 +75,7 @@ public class ServletLogin extends HttpServlet {
 				if (daoLoginRepository.validarAutenticaca(modelLogin)) {
 					
 					/**
-					 * Se o login deu certo...colocar u atributo de sessao passando o modeloLogin (Objeto)
+					 * Se o login deu certo...colocar um atributo de sessao passando o modeloLogin (Objeto)
 					 */
 					request.getSession().setAttribute("usuario", modelLogin.getLogin());
 					

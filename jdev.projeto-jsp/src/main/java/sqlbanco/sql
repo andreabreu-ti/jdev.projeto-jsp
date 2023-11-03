@@ -30,3 +30,24 @@ ALTER TABLE IF EXISTS public.model_login
 INSERT INTO public.model_login(
 	login, senha)
 	VALUES ('admin', 'admin9876');
+	
+
+-------------------------------------------------------------------------
+
+-- Aula 22.33 - Adicionando campos na tabela de usuário;
+
+alter table model_login add id serial primary key;
+
+alter table model_login add nome character varying(300);
+update model_login set nome = 'Administrador'
+alter table model_login alter column nome set not null;
+
+alter table model_login add email character varying(300);
+update model_login set email = 'admin@java.com'
+alter table model_login alter column email set not null;
+
+alter table model_login alter column login set not null;
+alter table model_login alter column senha set not null;
+
+
+select * from model_login

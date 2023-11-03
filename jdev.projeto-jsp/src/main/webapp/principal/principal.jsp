@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
     
     
 <!DOCTYPE html>
@@ -40,7 +40,7 @@
                                     <div class="page-body">
                                         
                                         
-                                        <h1>Conteúdo página base do sistema</h1>
+                                        <h1>ConteÃºdo pÃ¡gina base do sistema</h1>
                                         
                                     </div>
                                     

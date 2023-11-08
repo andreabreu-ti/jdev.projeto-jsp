@@ -19,6 +19,7 @@ Um sistema de cadastro de usuários desenvolvido no curso de JSP/JDBC com um cru
 - TypeScript
 - Ajax
 - Bootstrap
-
+- (JSTL) JavaServer Pages Standard Tag Library
+- 
 ## Data Base
 - Postgresql via JDBC com dependências do maven

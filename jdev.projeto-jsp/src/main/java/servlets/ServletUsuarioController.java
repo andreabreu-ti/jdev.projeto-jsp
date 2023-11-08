@@ -44,6 +44,10 @@ public class ServletUsuarioController extends HttpServlet {
 
 				String idUser = request.getParameter("id");
 				daoUsuarioRepository.deletarUser(idUser);
+				
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				request.setAttribute("modelLogins", modelLogins);
+				
 				request.setAttribute("msg", "Excluído com Sucesso!!!");
 
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
@@ -60,25 +64,44 @@ public class ServletUsuarioController extends HttpServlet {
 				String nomeBusca = request.getParameter("nomeBusca");
 				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioList(nomeBusca);
 
-				/*
-				 * 
-				 */
-
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(dadosJsonUser);
 				response.getWriter().write(json); // Utilizando ajax, a resposta é desta forma
 
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
 
+				/*
+				 * Buscar Editar vindas da unção Javascript verEditar(
+				 */
+				
 				String id = request.getParameter("id");
 
 				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(id);
+				
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				request.setAttribute("modelLogins", modelLogins);
 
 				request.setAttribute("msg", "Usuário em edição");
 				request.setAttribute("modelLogin", modelLogin);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
-			} else {
+			} 
+			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUser")) {
+				/*
+				 * Carregar os usuários
+				 */
+				
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				
+				request.setAttribute("msg", "Usuários carregados");
+				request.setAttribute("modelLogins", modelLogins);
+				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+				
+				
+			}
+			else {
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				request.setAttribute("modelLogins", modelLogins);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
 
@@ -129,6 +152,11 @@ public class ServletUsuarioController extends HttpServlet {
 
 				modelLogin = daoUsuarioRepository.gravaUsuario(modelLogin);
 			}
+			/*
+			 * Redireciona para garregar a lista de usuários
+			 */
+			List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+			request.setAttribute("modelLogins", modelLogins);
 
 			/*
 			 * Setar os dados após salvar e manter na tela. Mencionar no value da pagina

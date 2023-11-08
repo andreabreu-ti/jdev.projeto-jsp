@@ -1,9 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+
+<!-- Declaração do JSTL -->
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
     
 <!DOCTYPE html>
 <html lang="en">
+
 
 <jsp:include page="head.jsp"></jsp:include>
 
@@ -96,6 +99,30 @@
 				                        
 				                        <span id="msg">${msg}</span>
 				                        
+										<div style="height: 400px; overflow: scroll;">
+											<table class="table" id="tabelaResultadosview">
+											  <thead>
+											    <tr>
+											      <th scope="col">ID</th>
+											      <th scope="col">Nome</th>
+											      <th scope="col">Ver</th>
+											    </tr>
+											  </thead>
+											  <tbody>
+											  
+											  	<!-- Utilização do JSTL -->
+											  	<c:forEach items="${modelLogins}" var="ml">
+											  		<tr>
+											  			<td><c:out value="${ml.id}"></c:out></td>
+											  			<td><c:out value="${ml.nome}"></c:out></td>
+											  			<td><a class="btn btn-success" href="<%= request.getContextPath() %>/ServletUsuarioController?acao=buscarEditar&id=${ml.id}">Ver</a></td>
+											  		</tr>	
+											  	</c:forEach> 
+											  	 
+											  </tbody>
+											</table>
+										</div>				                        
+				                        
                                     
                                     <!-- Page-body end -->
                                 </div>
@@ -158,10 +185,12 @@
     
     	function verEditar(id) {
 
+    		//alert(id);
+    		
     		var urlAction = document.getElementById('formUser').action
 
     		//Redirecionamento com javascript
-    		window.location.href = urlAction = '?acao=buscarEditar&id='+id;    //Executa um get
+    		window.location.href = urlAction + '?acao=buscarEditar&id='+id;    //Executa um get
     		
 		}
     

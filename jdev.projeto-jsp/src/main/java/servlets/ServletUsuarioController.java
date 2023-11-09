@@ -18,7 +18,7 @@ import model.ModelLogin;
  * Servlet implementation class ServletUsuarioController
  * 
  */
-public class ServletUsuarioController extends HttpServlet {
+public class ServletUsuarioController extends ServletGenericUtil {
 	private static final long serialVersionUID = 1L;
 
 	private DAOUsuarioRepository daoUsuarioRepository = new DAOUsuarioRepository();
@@ -45,7 +45,7 @@ public class ServletUsuarioController extends HttpServlet {
 				String idUser = request.getParameter("id");
 				daoUsuarioRepository.deletarUser(idUser);
 				
-				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
 				
 				request.setAttribute("msg", "Excluído com Sucesso!!!");
@@ -62,7 +62,7 @@ public class ServletUsuarioController extends HttpServlet {
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjax")) {
 
 				String nomeBusca = request.getParameter("nomeBusca");
-				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioList(nomeBusca);
+				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioList(nomeBusca,super.getUserLogado(request));
 
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(dadosJsonUser);
@@ -76,9 +76,9 @@ public class ServletUsuarioController extends HttpServlet {
 				
 				String id = request.getParameter("id");
 
-				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(id);
+				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(id,super.getUserLogado(request));
 				
-				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
 
 				request.setAttribute("msg", "Usuário em edição");
@@ -91,7 +91,7 @@ public class ServletUsuarioController extends HttpServlet {
 				 * Carregar os usuários
 				 */
 				
-				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				
 				request.setAttribute("msg", "Usuários carregados");
 				request.setAttribute("modelLogins", modelLogins);
@@ -100,7 +100,7 @@ public class ServletUsuarioController extends HttpServlet {
 				
 			}
 			else {
-				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
@@ -130,13 +130,15 @@ public class ServletUsuarioController extends HttpServlet {
 			String email = request.getParameter("email");
 			String login = request.getParameter("login");
 			String senha = request.getParameter("senha");
-
+			String perfil = request.getParameter("perfil");
+			
 			ModelLogin modelLogin = new ModelLogin();
 			modelLogin.setId(id != null && !id.isEmpty() ? Long.parseLong(id) : null);
 			modelLogin.setNome(nome);
 			modelLogin.setEmail(email);
 			modelLogin.setLogin(login);
 			modelLogin.setSenha(senha);
+			modelLogin.setPerfil(perfil);
 
 			/*
 			 * Se já existe o mesmo usuário cadastrado e tentando candastra um novo
@@ -150,12 +152,12 @@ public class ServletUsuarioController extends HttpServlet {
 					msg = "Operação atualizada com sucesso!!!";
 				}
 
-				modelLogin = daoUsuarioRepository.gravaUsuario(modelLogin);
+				modelLogin = daoUsuarioRepository.gravaUsuario(modelLogin,super.getUserLogado(request));
 			}
 			/*
 			 * Redireciona para garregar a lista de usuários
 			 */
-			List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList();
+			List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 			request.setAttribute("modelLogins", modelLogins);
 
 			/*

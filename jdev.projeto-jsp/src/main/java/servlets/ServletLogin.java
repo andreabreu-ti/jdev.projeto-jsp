@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 
 import dao.DAOLoginRepository;
+import dao.DAOUsuarioRepository;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -21,6 +22,7 @@ public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private DAOLoginRepository daoLoginRepository = new DAOLoginRepository();
+	private DAOUsuarioRepository daoUsuarioRepository = new DAOUsuarioRepository();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -74,10 +76,17 @@ public class ServletLogin extends HttpServlet {
 				
 				if (daoLoginRepository.validarAutenticaca(modelLogin)) {
 					
+					/*
+					 * Pesquisar no banco para saber se o usuário é admin
+					 */
+					modelLogin = daoUsuarioRepository.consultaUsuarioLogado(login);
+					
+					
 					/**
 					 * Se o login deu certo...colocar um atributo de sessao passando o modeloLogin (Objeto)
 					 */
 					request.getSession().setAttribute("usuario", modelLogin.getLogin());
+					request.getSession().setAttribute("perfil", modelLogin.getPerfil());
 					
 					/**
 					 * Colocou na seção, redirecionar para o principal.jsp

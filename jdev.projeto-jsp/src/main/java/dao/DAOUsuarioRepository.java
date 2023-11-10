@@ -27,7 +27,7 @@ public class DAOUsuarioRepository {
 
 		if (objeto.isNovo()) { // Gravar usuário
 
-			String sql = "insert into model_login(login, senha, nome, email, usuario_id, perfil) values(?,?,?,?,?,?);";
+			String sql = "insert into model_login(login, senha, nome, email, usuario_id, perfil, sexo) values(?,?,?,?,?,?,?);";
 			PreparedStatement prepareSql = connection.prepareStatement(sql);
 
 			prepareSql.setString(1, objeto.getLogin());
@@ -36,12 +36,30 @@ public class DAOUsuarioRepository {
 			prepareSql.setString(4, objeto.getEmail());
 			prepareSql.setLong(5, userLogado);
 			prepareSql.setString(6, objeto.getPerfil());
+			prepareSql.setString(7, objeto.getSexo());
 
 			prepareSql.execute();
 			connection.commit(); // Garantir a inclusão de dados
 
+			/*
+			 * Após a inserção, realizar um update se realmente existir a foto
+			 */
+
+			if (objeto.getFotoUser() != null && !objeto.getFotoUser().isEmpty()) {
+				sql = "update model_login set fotouser = ?, extensaofotouser = ? where login = ?";
+				prepareSql = connection.prepareStatement(sql);
+				prepareSql.setString(1, objeto.getFotoUser());
+				prepareSql.setString(2, objeto.getExtensaofotouser());
+				prepareSql.setString(3, objeto.getLogin());
+
+				prepareSql.execute();
+				connection.commit();
+
+			}
+
 		} else {
-			String sql = "update model_login set login=?, senha=?, nome=?, email=?, perfil=? where id = " + objeto.getId() + ";";
+			String sql = "update model_login set login=?, senha=?, nome=?, email=?, perfil=?, sexo=? where id = "
+					+ objeto.getId() + ";";
 			PreparedStatement prepareSql = connection.prepareStatement(sql);
 
 			prepareSql.setString(1, objeto.getLogin());
@@ -49,9 +67,26 @@ public class DAOUsuarioRepository {
 			prepareSql.setString(3, objeto.getNome());
 			prepareSql.setString(4, objeto.getEmail());
 			prepareSql.setString(5, objeto.getPerfil());
+			prepareSql.setString(6, objeto.getSexo());
 
 			prepareSql.executeUpdate();
 			connection.commit();
+
+			/*
+			 * Após a atualiação, realizar um update se realmente existir a foto
+			 */
+
+			if (objeto.getFotoUser() != null && !objeto.getFotoUser().isEmpty()) {
+				sql = "update model_login set fotouser = ?, extensaofotouser = ? where id = ?";
+				prepareSql = connection.prepareStatement(sql);
+				prepareSql.setString(1, objeto.getFotoUser());
+				prepareSql.setString(2, objeto.getExtensaofotouser());
+				prepareSql.setLong(3, objeto.getId());
+
+				prepareSql.execute();
+				connection.commit();
+
+			}
 
 		}
 		return this.consultaUsuario(objeto.getLogin(), userLogado);
@@ -81,6 +116,7 @@ public class DAOUsuarioRepository {
 			modelLogin.setLogin(resultado.getString("login"));
 			modelLogin.setNome(resultado.getString("nome"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
 
 			retorno.add(modelLogin);
 
@@ -114,6 +150,7 @@ public class DAOUsuarioRepository {
 			modelLogin.setLogin(resultado.getString("login"));
 			modelLogin.setNome(resultado.getString("nome"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
 
 			retorno.add(modelLogin);
 
@@ -137,7 +174,7 @@ public class DAOUsuarioRepository {
 		 * Se consultar e achar no banco, setar os dados
 		 */
 		while (resultado.next()) {
-			
+
 			modelLogin.setId(resultado.getLong("id"));
 			modelLogin.setEmail(resultado.getString("email"));
 			modelLogin.setLogin(resultado.getString("login"));
@@ -145,6 +182,8 @@ public class DAOUsuarioRepository {
 			modelLogin.setNome(resultado.getString("nome"));
 			modelLogin.setUseradmin(resultado.getBoolean("useradmin"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setFotoUser(resultado.getString("fotouser"));
 		}
 
 		return modelLogin;
@@ -174,6 +213,8 @@ public class DAOUsuarioRepository {
 			modelLogin.setNome(resultado.getString("nome"));
 			modelLogin.setUseradmin(resultado.getBoolean("useradmin"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setFotoUser(resultado.getString("fotouser"));
 		}
 
 		return modelLogin;
@@ -203,6 +244,8 @@ public class DAOUsuarioRepository {
 			modelLogin.setSenha(resultado.getString("senha"));
 			modelLogin.setNome(resultado.getString("nome"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setFotoUser(resultado.getString("fotouser"));
 		}
 
 		return modelLogin;
@@ -235,6 +278,9 @@ public class DAOUsuarioRepository {
 			modelLogin.setSenha(resultado.getString("senha"));
 			modelLogin.setNome(resultado.getString("nome"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setFotoUser(resultado.getString("fotouser"));
+			modelLogin.setExtensaofotouser(resultado.getString("extensaofotouser"));
 
 		}
 

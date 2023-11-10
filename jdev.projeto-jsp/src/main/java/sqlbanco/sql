@@ -67,3 +67,13 @@ alter table model_login add column perfil character varying(200)
 
 
 -------------------------------------------------------------------------
+
+--AULA 22.55
+ALTER TABLE IF EXISTS public.model_login ADD COLUMN sexo character varying(200)
+
+--AULA 22.56
+ALTER TABLE IF EXISTS public.model_login ADD COLUMN fotouser text
+
+ALTER TABLE IF EXISTS public.model_login ADD COLUMN extensaofotouser character varying(10)
+
+-------------------------------------------------------------------------

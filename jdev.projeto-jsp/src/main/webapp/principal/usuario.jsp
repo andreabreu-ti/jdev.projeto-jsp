@@ -51,7 +51,7 @@
                                                     </div>
                                                     <div class="card-block">
                                         
-														<form class="form-material" action="<%= request.getContextPath()%>/ServletUsuarioController" method="post" id="formUser">
+														<form class="form-material" enctype="multipart/form-data" action="<%= request.getContextPath()%>/ServletUsuarioController" method="post" id="formUser">
 														
 															<input type="hidden" name="acao" id="acao" value="">									
 														
@@ -60,6 +60,31 @@
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Id:</label>
                                                             </div>
+                                                            
+                                                            <div class="form-group form-default input-group mb-4">
+                                                            	<div class="input-group-prepend">
+                                                            		
+                                                            		<!-- Verificando se existe imagem para carregar na tela -->
+                                                            		<c:if test="${modelLogin.fotoUser != '' && modelLogin.fotoUser != null}">
+                                                            			
+                                                            			<a href="<%= request.getContextPath()%>/ServletUsuarioController?acao=downloadFoto&id=${modelLogin.id}">
+                                                            				<img alt="Imagem User" id="fotoembase64" src="${modelLogin.fotoUser}" width="70px" >
+                                                            			</a>
+                                                            			
+                                                            		</c:if>
+                                                            		
+                                                            		
+                                                            		<c:if test="${modelLogin.fotoUser == '' || modelLogin.fotoUser == null}">
+                                                            			<img alt="Imagem User" id="fotoembase64" src="assets/images/user.png" width="70px" >
+                                                            		</c:if>
+                                                            		
+                                                            	</div>
+                                                            	<input type="file" id="fileFoto" name="fileFoto" accept="image/*" onchange="visualizarImg('fotoembase64','fileFoto');" class="form-control-file" style="margin-top: 15px; margin-left: 5px">
+                                                            
+                                                            </div>
+                                                            
+                                                            
+                                                            
                                                             <div class="form-group form-default form-static-label">
                                                                 <input type="text" name="nome" id="nome" class="form-control" required="required" value="${modelLogin.nome}">
                                                                 <span class="form-bar"></span>
@@ -121,6 +146,29 @@
                                                                 <input type="password" name="senha" id="senha" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.senha}">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Password</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                            
+                                                            	<input type="radio" name="sexo" checked="checked" value="MASCULINO"<%
+                                                            	
+                                                            		modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+	                                                            	if (modelLogin != null && modelLogin.getSexo().equals("MASCULINO")){
+																		out.print(" ");
+																			out.print("checked=\"checked\"");
+																		out.print(" ");	  
+																    }
+                                                            	%>>Masculino</>
+                                                            	
+                                                            	<input type="radio"name="sexo" value="FEMININO" <%
+                                                            	
+                                                            		modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+	                                                            	if (modelLogin != null && modelLogin.getSexo().equals("FEMININO")){
+																		out.print(" ");
+																			out.print("checked=\"checked\"");
+																		out.print(" ");	  
+																    }
+                                                            	%>>Feminino</>
                                                             </div>
                                                             
                                                             <button type="button" class="btn waves-effect waves-light btn-primary" onclick="limparForm();"><i class="icofont icofont-user-alt-3"></i>Novo</button>
@@ -225,6 +273,25 @@
     
     
     <script type="text/javascript">
+    
+    	function visualizarImg(fotoembase64,filefoto) {
+			
+    		var preview = document.getElementById(fotoembase64);  //Campo img do html
+    		var fileUser = document.getElementById(filefoto).files[0];
+    		
+    		var reader = new FileReader();
+    		
+    		reader.onload = function () {
+    			preview.src = reader.result;	//Carrega a foto na tela
+			};
+			
+			if (fileUser) {
+				reader.readAsDataURL(fileUser);		//Preview da imagem
+			}else {
+				preview.src = '';
+			}
+    		
+		}
     
     	function verEditar(id) {
 

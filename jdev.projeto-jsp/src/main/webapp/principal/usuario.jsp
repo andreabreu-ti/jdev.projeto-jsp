@@ -73,7 +73,6 @@
                                                             			
                                                             		</c:if>
                                                             		
-                                                            		
                                                             		<c:if test="${modelLogin.fotoUser == '' || modelLogin.fotoUser == null}">
                                                             			<img alt="Imagem User" id="fotoembase64" src="assets/images/user.png" width="70px" >
                                                             		</c:if>
@@ -247,7 +246,22 @@
 											  	 
 											  </tbody>
 											</table>
-										</div>				                        
+										</div>	
+										
+										<nav aria-label="Page navigation example">
+										  <ul class="pagination">
+										  
+										  	<%
+										  		int totalPagina = (int) request.getAttribute("totalPagina");
+										  		for(int p = 0; p < totalPagina; p++){
+										  			String url = request.getContextPath() + "/ServletUsuarioController?acao=paginar&pagina=" + (p * 5);
+										  			out.print("<li class=\"page-item\"><a class=\"page-link\" href=\"" + url + "\">" +(p + 1)+ "</a></li>");
+										  		}
+										  	%>
+										  
+										    
+										  </ul>
+										</nav>													                        
 				                        
                                     
                                     <!-- Page-body end -->
@@ -297,6 +311,8 @@
 				  </tbody>
 				</table>
 			</div>
+			
+			
 	        <span id="totalResultados"></span>
 	      </div>
 	      <div class="modal-footer">

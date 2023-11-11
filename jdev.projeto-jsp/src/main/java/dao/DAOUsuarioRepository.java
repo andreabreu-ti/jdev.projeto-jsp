@@ -106,13 +106,36 @@ public class DAOUsuarioRepository {
 	}
 	
 	/*
+	 * PAGINAÇÃO
+	 */
+	
+	public int totalpagina(Long userLogado) throws SQLException {
+		
+		String sql = "select count(*) as total from model_login where usuario_id = " + userLogado;
+		
+		PreparedStatement prepareSql = connection.prepareStatement(sql);
+		ResultSet resultado = prepareSql.executeQuery();
+		resultado.next();
+		Double cadastros = resultado.getDouble("total");
+		Double porpagina = 5.0;
+		Double pagina  = cadastros / porpagina;
+		Double resto = pagina % 2;
+		
+		if(resto > 0) {
+			pagina++;
+		}
+		
+		return pagina.intValue();
+	}
+	
+	
+	/*
 	 * Consulta para PAGINAÇÃO
 	 */
 	public List<ModelLogin> consultaUsuarioListPaginado(Long userLogado, Integer offset) throws SQLException {
 		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
 
 		String sql = "select * from model_login where useradmin is false and usuario_id = " + userLogado +" order by nome offset "+offset+" limit 5";
-
 		PreparedStatement prepareSql = connection.prepareStatement(sql);
 		ResultSet resultado = prepareSql.executeQuery();
 

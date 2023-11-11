@@ -73,7 +73,6 @@ public class ServletLogin extends HttpServlet {
 				/**
 				 * 	Simulação de Login
 				 */
-				
 				if (daoLoginRepository.validarAutenticaca(modelLogin)) {
 					
 					/*
@@ -81,12 +80,13 @@ public class ServletLogin extends HttpServlet {
 					 */
 					modelLogin = daoUsuarioRepository.consultaUsuarioLogado(login);
 					
-					
 					/**
 					 * Se o login deu certo...colocar um atributo de sessao passando o modeloLogin (Objeto)
 					 */
 					request.getSession().setAttribute("usuario", modelLogin.getLogin());
 					request.getSession().setAttribute("perfil", modelLogin.getPerfil());
+					
+					request.getSession().setAttribute("imageUser", modelLogin.getFotoUser());
 					
 					/**
 					 * Colocou na seção, redirecionar para o principal.jsp

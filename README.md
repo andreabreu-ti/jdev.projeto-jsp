@@ -4,7 +4,7 @@
 Servlets com JavaServer Pages (JSP) e JDBC com SQL e Java
 
 # Sobre o Projeto
-Um sistema de cadastro de usuários desenvolvido no curso de JSP/JDBC com um crud completo, trabalhando com reaproveitamento de templates, variáveis diversas, consumo de API WebService ViaCep, paginação...
+Um sistema de cadastro de usuários desenvolvido no curso de JSP/JDBC com um crud completo, trabalhando com reaproveitamento de templates, variáveis diversas, consumo de API WebService via javascript (ViaCep) , paginação...
 
 # Tecnologias utilizadas
 

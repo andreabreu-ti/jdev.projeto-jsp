@@ -138,6 +138,41 @@
                                                             </div>
                                                             
                                                             <div class="form-group form-default form-static-label">
+                                                                <input onblur="pesquisaCep();" type="text" name="cep" id="cep" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.cep}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Cep:</label>
+                                                            </div>
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.logradouro}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Logradouro:</label>
+                                                            </div>
+                                                             <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="bairro" id="bairro" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.bairro}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Bairro:</label>
+                                                            </div>
+                                                             <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="localidade" id="localidade" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.localidade}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Localidade:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="uf" id="uf" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.uf}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">UF:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="numero" id="numero" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.numero}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Número:</label>
+                                                            </div>
+                                                            
+                                                            
+                                                            
+                                                            <div class="form-group form-default form-static-label">
                                                                 <input type="text" name="login" id="login" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.login}">
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Login</label>
@@ -273,6 +308,28 @@
     
     
     <script type="text/javascript">
+    
+    	function pesquisaCep() {
+    		
+			var cep = $("#cep").val();
+			
+			//Consulta o webservice viacep.com.br/
+            $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+				
+            	if (!("erro" in dados)) {
+            		
+            		//Atualiza os campos com os valores da consulta.
+            		$("#cep").val(dados.cep);
+                    $("#logradouro").val(dados.logradouro);
+                    $("#bairro").val(dados.bairro);
+                    $("#localidade").val(dados.localidade);
+                    $("#uf").val(dados.uf);
+                    
+            	}
+            	
+			});
+			
+		}
     
     	function visualizarImg(fotoembase64,filefoto) {
 			

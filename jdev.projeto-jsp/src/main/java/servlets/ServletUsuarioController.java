@@ -69,9 +69,27 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioList(nomeBusca,super.getUserLogado(request));
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(dadosJsonUser);
+				
+				response.addHeader("totalPagina", ""+ daoUsuarioRepository.consultaUsuarioListTotalPaginacao(nomeBusca, super.getUserLogado(request)));
+				
 				response.getWriter().write(json); // Utilizando ajax, a resposta é desta forma
 
-			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
+			} 
+			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjaxPage")) {
+
+				String nomeBusca = request.getParameter("nomeBusca");
+				String pagina = request.getParameter("pagina");
+				
+				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioListOffset(nomeBusca,super.getUserLogado(request),Integer.parseInt(pagina));
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(dadosJsonUser);
+				
+				response.addHeader("totalPagina", ""+ daoUsuarioRepository.consultaUsuarioListTotalPaginacao(nomeBusca, super.getUserLogado(request)));
+				
+				response.getWriter().write(json); // Utilizando ajax, a resposta é desta forma
+
+			}
+			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
 
 				/*
 				 * Buscar Editar vindas da unção Javascript verEditar(

@@ -87,3 +87,26 @@ ALTER TABLE public.model_login ADD COLUMN uf character varying(2);
 ALTER TABLE public.model_login ADD COLUMN numero character varying(250);
 
 -------------------------------------------------------------------------
+
+-- AULA 22.68
+
+CREATE SEQUENCE IF NOT EXISTS public.telefone_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1
+    OWNED BY model_login.id;
+
+
+
+create table telefone (
+	id integer not null default nextval('telefone_seq'::regclass),
+	numero character varying(50) not null,
+	usuario_pai_id bigint not null,
+	usuario_cadastro_id bigint not null,
+	
+	constraint telefone_pkey primary key (id),
+	constraint usuario_pai_fk foreign key (usuario_pai_id) references model_login(id),
+	constraint usuario_cadastro_fk foreign key (usuario_cadastro_id) references model_login(id)
+)

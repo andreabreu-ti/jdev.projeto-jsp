@@ -54,6 +54,8 @@ public class DAOTelefoneRepository {
 		String sql = "select * from telefone where usuario_pai_id =?";
 
 		PreparedStatement prepareSql = connection.prepareStatement(sql);
+		
+		prepareSql.setLong(1, idUserPai);
 
 		ResultSet rs = prepareSql.executeQuery();
 
@@ -62,7 +64,7 @@ public class DAOTelefoneRepository {
 			ModelTelefone modelTelefone = new ModelTelefone();
 
 			modelTelefone.setId(rs.getLong("id"));
-			modelTelefone.setNumero(rs.getString("numro"));
+			modelTelefone.setNumero(rs.getString("numero"));
 			modelTelefone
 					.setUsuario_cadastro_id(daoUsuarioRepository.consultaUsuarioID(rs.getLong("usuario_cadastro_id")));
 			modelTelefone.setUsuario_pai_id(daoUsuarioRepository.consultaUsuarioID(rs.getLong("usuario_pai_id")));

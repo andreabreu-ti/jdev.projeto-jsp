@@ -89,6 +89,14 @@
                                                                 <span class="form-bar"></span>
                                                                 <label class="float-label">Nome:</label>
                                                             </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="dataNascimento" id="dataNascimento" class="form-control" required="required" value="${modelLogin.dataNascimento}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Data Nascimento:</label>
+                                                            </div>
+                                                            
+                                                            
                                                             <div class="form-group form-default form-static-label">
                                                                 <input type="email" name="email" id="email" class="form-control" placeholder="" required="required" autocomplete="off" value="${modelLogin.email}">
                                                                 <span class="form-bar"></span>
@@ -206,8 +214,13 @@
                                                             </div>
                                                             
                                                             <button type="button" class="btn waves-effect waves-light btn-primary" onclick="limparForm();"><i class="icofont icofont-user-alt-3"></i>Novo</button>
-                                                            <button class="btn waves-effect waves-light btn-success"><i class="icofont icofont-check-circled"></i>Salva</button>
+                                                            <button class="btn waves-effect waves-light btn-success"><i class="icofont icofont-check-circled"></i>Salvar</button>
                 											<button type="button" class="btn waves-effect waves-light btn-danger" onclick="criaDeleteComAjax();"><i class="icofont icofont-eye-alt"></i>Excluir</button>
+                                                            
+                                                            <c:if test="${modelLogin.id > 0}">
+                                                            	<a  href="<%= request.getContextPath() %>/ServletTelefone?iduser=${modelLogin.id}" class="btn btn btn-info waves-effect waves-light">Telefone</a>
+                                                            </c:if>
+                                                            
                                                             
                                                             <!-- Button trigger modal -->
 															<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModalUsuario">
@@ -331,6 +344,29 @@
     
     
     <script type="text/javascript">
+    
+	  $( function() {
+	  	  
+	  	  $("#dataNascimento").datepicker({
+	  		    dateFormat: 'dd/mm/yy',
+	  		    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+	  		    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+	  		    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+	  		    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+	  		    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+	  		    nextText: 'Próximo',
+	  		    prevText: 'Anterior'
+	  		});
+	  } );
+    	
+	    $("#numero").keypress(function (event) {
+	    	return /\d/.test(String.fromCharCode(event.keyCode));
+		});
+	    
+		$("#cep").keypress(function (event) {
+	    	return /\d/.test(String.fromCharCode(event.keyCode));
+		});
+    
     
     	function pesquisaCep() {
     		

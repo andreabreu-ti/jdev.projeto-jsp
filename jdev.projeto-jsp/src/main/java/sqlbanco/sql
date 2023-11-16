@@ -110,3 +110,8 @@ create table telefone (
 	constraint usuario_pai_fk foreign key (usuario_pai_id) references model_login(id),
 	constraint usuario_cadastro_fk foreign key (usuario_cadastro_id) references model_login(id)
 )
+
+-------------------------------------------------------------------------
+--Aula 22.73
+ALTER TABLE IF EXISTS public.model_login
+    ADD COLUMN datanascimento date;

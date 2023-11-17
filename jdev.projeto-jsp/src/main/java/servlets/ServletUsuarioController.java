@@ -1,15 +1,16 @@
 package servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.tomcat.jakartaee.commons.compress.utils.IOUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DAOUsuarioRepository;
@@ -21,12 +22,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import model.ModelLogin;
+import util.ReportUtil;
 
 /**
  * Servlet implementation class ServletUsuarioController
  * 
  */
-@MultipartConfig  //Para trabalhar com upload de fotos
+@MultipartConfig // Para trabalhar com upload de fotos
 public class ServletUsuarioController extends ServletGenericUtil {
 	private static final long serialVersionUID = 1L;
 
@@ -68,36 +70,38 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjax")) {
 
 				String nomeBusca = request.getParameter("nomeBusca");
-				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioList(nomeBusca,super.getUserLogado(request));
+				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioList(nomeBusca,
+						super.getUserLogado(request));
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(dadosJsonUser);
-				
-				response.addHeader("totalPagina", ""+ daoUsuarioRepository.consultaUsuarioListTotalPaginacao(nomeBusca, super.getUserLogado(request)));
-				
+
+				response.addHeader("totalPagina", "" + daoUsuarioRepository.consultaUsuarioListTotalPaginacao(nomeBusca,
+						super.getUserLogado(request)));
+
 				response.getWriter().write(json); // Utilizando ajax, a resposta é desta forma
 
-			} 
-			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjaxPage")) {
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarUserAjaxPage")) {
 
 				String nomeBusca = request.getParameter("nomeBusca");
 				String pagina = request.getParameter("pagina");
-				
-				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioListOffset(nomeBusca,super.getUserLogado(request),Integer.parseInt(pagina));
+
+				List<ModelLogin> dadosJsonUser = daoUsuarioRepository.consultaUsuarioListOffset(nomeBusca,
+						super.getUserLogado(request), Integer.parseInt(pagina));
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(dadosJsonUser);
-				
-				response.addHeader("totalPagina", ""+ daoUsuarioRepository.consultaUsuarioListTotalPaginacao(nomeBusca, super.getUserLogado(request)));
-				
+
+				response.addHeader("totalPagina", "" + daoUsuarioRepository.consultaUsuarioListTotalPaginacao(nomeBusca,
+						super.getUserLogado(request)));
+
 				response.getWriter().write(json); // Utilizando ajax, a resposta é desta forma
 
-			}
-			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("buscarEditar")) {
 
 				/*
 				 * Buscar Editar vindas da unção Javascript verEditar(
 				 */
 				String id = request.getParameter("id");
-				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(id,super.getUserLogado(request));
+				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(id, super.getUserLogado(request));
 				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
 				request.setAttribute("msg", "Usuário em edição");
@@ -105,57 +109,96 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				request.setAttribute("totalPagina", daoUsuarioRepository.totalpagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 
-			} 
-			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUser")) {
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUser")) {
 				/*
 				 * Carregar os usuários
 				 */
-				
+
 				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("msg", "Usuários carregados");
 				request.setAttribute("modelLogins", modelLogins);
 				request.setAttribute("totalPagina", daoUsuarioRepository.totalpagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
-				
-				
-			}
-			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("downloadFoto")) {
-				
+
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("downloadFoto")) {
+
 				String idUser = request.getParameter("id");
 				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioID(idUser, super.getUserLogado(request));
 				if (modelLogin.getFotoUser() != null && !modelLogin.getFotoUser().isEmpty()) {
-					response.setHeader("Content-Disposition", "attachment;filename=arquivo." + modelLogin.getExtensaofotouser());
+					response.setHeader("Content-Disposition",
+							"attachment;filename=arquivo." + modelLogin.getExtensaofotouser());
 					new Base64();
-					response.getOutputStream().write(Base64.decodeBase64(modelLogin.getFotoUser().split("\\,")[1]));	
+					response.getOutputStream().write(Base64.decodeBase64(modelLogin.getFotoUser().split("\\,")[1]));
 				}
-				
-			}
-			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("paginar")) {
-				
+
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("paginar")) {
+
 				Integer offset = Integer.parseInt(request.getParameter("pagina"));
-				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioListPaginado(this.getUserLogado(request), offset);
+				List<ModelLogin> modelLogins = daoUsuarioRepository
+						.consultaUsuarioListPaginado(this.getUserLogado(request), offset);
 				request.setAttribute("modelLogins", modelLogins);
 				request.setAttribute("totalPagina", daoUsuarioRepository.totalpagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
-				
-			}
-			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioUser")) {
-			
-				String dataInicial =  request.getParameter("dataInicial");
-				String dataFinal =  request.getParameter("dataFinal");
-				
+
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioUser")) {
+
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+
 				if (dataInicial == null || dataInicial.isEmpty() && dataFinal == null || dataFinal.isEmpty()) {
-					
-					request.setAttribute("listaUser", daoUsuarioRepository.consultaUsuarioListRel(super.getUserLogado(request)));
-					
+
+					request.setAttribute("listaUser",
+							daoUsuarioRepository.consultaUsuarioListRel(super.getUserLogado(request)));
+
+				} else {
+					request.setAttribute("listaUser", daoUsuarioRepository
+							.consultaUsuarioListRel(super.getUserLogado(request), dataInicial, dataFinal));
 				}
-				
+
 				request.setAttribute("dataInicial", dataInicial);
 				request.setAttribute("dataFinal", dataFinal);
-				
+
 				request.getRequestDispatcher("principal/reluser.jsp").forward(request, response);
+				
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioPDF")
+					|| acao.equalsIgnoreCase("imprimirRelatorioExcel")) {
+
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+
+				List<ModelLogin> modelLogins = null;
+
+				if (dataInicial == null || dataInicial.isEmpty() && dataFinal == null || dataFinal.isEmpty()) {
+					modelLogins = daoUsuarioRepository.consultaUsuarioListRel(super.getUserLogado(request));
+				} else {
+					modelLogins = daoUsuarioRepository.consultaUsuarioListRel(super.getUserLogado(request), dataInicial,dataFinal);
+				}
+
+				HashMap<String, Object> params = new HashMap<String, Object>();
+				params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("relatorio") + File.separator);
+
+				byte[] relatorio = null;
+				String extensal = "";
+				
+				if (acao.equalsIgnoreCase("imprimirRelatorioPDF")) {
+					
+					relatorio = new ReportUtil().geraRelatorioPDF(modelLogins, "reluser-jsp", params,request.getServletContext());
+					extensal = "pdf";
+				}else 
+					if (acao.equalsIgnoreCase("imprimirRelatorioExcel")) {
+						
+						relatorio = new ReportUtil().geraRelatorioExcel(modelLogins, "reluser-jsp", params,request.getServletContext());
+						extensal = "xls";
+						
+						
+					}
+				
+				
+
+				response.setHeader("Content-Disposition", "attachment;filename=arquivo."+extensal);
+				response.getOutputStream().write(relatorio);
 			}
-			
+
 			else {
 				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
@@ -198,11 +241,11 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			String numero = request.getParameter("numero");
 			String dataNascimento = request.getParameter("dataNascimento");
 			String rendaMensal = request.getParameter("rendamensal");
-			
+
 			rendaMensal = rendaMensal.split("\\ ")[1].replaceAll("\\.", "").replaceAll("\\,", ".");
-			
+
 			ModelLogin modelLogin = new ModelLogin();
-			
+
 			modelLogin.setId(id != null && !id.isEmpty() ? Long.parseLong(id) : null);
 			modelLogin.setNome(nome);
 			modelLogin.setEmail(email);
@@ -216,28 +259,30 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			modelLogin.setLocalidade(localidade);
 			modelLogin.setUf(uf);
 			modelLogin.setNumero(numero);
-			
-			Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataNascimento)));
-			
-			modelLogin.setDataNascimento(Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataNascimento))));
+
+			Date.valueOf(new SimpleDateFormat("yyyy-mm-dd")
+					.format(new SimpleDateFormat("dd/mm/yyyy").parse(dataNascimento)));
+
+			modelLogin.setDataNascimento(Date.valueOf(new SimpleDateFormat("yyyy-mm-dd")
+					.format(new SimpleDateFormat("dd/mm/yyyy").parse(dataNascimento))));
 			modelLogin.setRendaMensal(Double.parseDouble(rendaMensal));
-			
-			
+
 			/*
 			 * Tratamento para salvar a imagem no banco de dados
 			 */
 			if (ServletFileUpload.isMultipartContent(request)) {
-				
-				Part part = request.getPart("fileFoto"); 		//Do formulário pegar a foto da tela
-				
+
+				Part part = request.getPart("fileFoto"); // Do formulário pegar a foto da tela
+
 				if (part.getSize() > 0) {
-					
-					byte[] foto = IOUtils.toByteArray(part.getInputStream());	//Converte imagem para byte
-					String imageBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64," + new Base64().encodeBase64String(foto);
+
+					byte[] foto = IOUtils.toByteArray(part.getInputStream()); // Converte imagem para byte
+					String imageBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64,"
+							+ new Base64().encodeBase64String(foto);
 					modelLogin.setFotoUser(imageBase64);
-					modelLogin.setExtensaofotouser(part.getContentType().split("\\/")[1]);	
+					modelLogin.setExtensaofotouser(part.getContentType().split("\\/")[1]);
 				}
-				
+
 			}
 
 			/*
@@ -252,7 +297,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 					msg = "Operação atualizada com sucesso!!!";
 				}
 
-				modelLogin = daoUsuarioRepository.gravaUsuario(modelLogin,super.getUserLogado(request));
+				modelLogin = daoUsuarioRepository.gravaUsuario(modelLogin, super.getUserLogado(request));
 			}
 			/*
 			 * Redireciona para garregar a lista de usuários

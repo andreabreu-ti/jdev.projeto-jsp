@@ -1,14 +1,17 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import connection.SingleConnectionBanco;
 import model.ModelLogin;
+import model.ModelTelefone;
 
 public class DAOUsuarioRepository {
 
@@ -161,7 +164,7 @@ public class DAOUsuarioRepository {
 		}
 		return retorno;
 	}
-	
+
 	public List<ModelLogin> consultaUsuarioListRel(Long userLogado) throws SQLException {
 		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
 
@@ -182,6 +185,47 @@ public class DAOUsuarioRepository {
 			modelLogin.setNome(resultado.getString("nome"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setDataNascimento(resultado.getDate("datanascimento"));
+
+			modelLogin.setTelefones(this.listFone(modelLogin.getId()));
+
+			retorno.add(modelLogin);
+
+		}
+		return retorno;
+	}
+
+	public List<ModelLogin> consultaUsuarioListRel(Long userLogado, String dataInicial, String dataFinal)
+			throws Exception {
+		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
+
+		String sql = "select * from model_login where useradmin is false and usuario_id = " + userLogado
+				+ "and datanascimento >= ? and datanascimento <= ?";
+
+		PreparedStatement prepareSql = connection.prepareStatement(sql);
+
+		prepareSql.setDate(1, Date.valueOf(
+				new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataInicial))));
+		prepareSql.setDate(2, Date.valueOf(
+				new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataFinal))));
+
+		ResultSet resultado = prepareSql.executeQuery();
+
+		/*
+		 * Percorrer as linhs de resultado do SQL
+		 */
+		while (resultado.next()) {
+
+			ModelLogin modelLogin = new ModelLogin();
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setLogin(resultado.getString("login"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setDataNascimento(resultado.getDate("datanascimento"));
+
+			modelLogin.setTelefones(this.listFone(modelLogin.getId()));
 
 			retorno.add(modelLogin);
 
@@ -243,15 +287,15 @@ public class DAOUsuarioRepository {
 
 		return pagina.intValue();
 	}
-	
-	
+
 	/*
 	 * Método para LISTAR os usuários em uma MODAL
 	 */
 	public List<ModelLogin> consultaUsuarioListOffset(String nome, Long userLogado, int offset) throws SQLException {
 		List<ModelLogin> retorno = new ArrayList<ModelLogin>();
 
-		String sql = "select * from model_login where upper(nome) like upper(?) and useradmin is false and usuario_id = ? offset " + offset + " limit 5";
+		String sql = "select * from model_login where upper(nome) like upper(?) and useradmin is false and usuario_id = ? offset "
+				+ offset + " limit 5";
 
 		PreparedStatement prepareSql = connection.prepareStatement(sql);
 
@@ -477,7 +521,7 @@ public class DAOUsuarioRepository {
 		return modelLogin;
 
 	}
-	
+
 	/*
 	 * Método para CONSULTAR usuários por ID
 	 */
@@ -547,6 +591,30 @@ public class DAOUsuarioRepository {
 		prepareSql.setLong(1, Long.parseLong(idUser));
 		prepareSql.executeUpdate();
 		connection.commit();
+	}
+
+	public List<ModelTelefone> listFone(Long idUserPai) throws SQLException {
+
+		List<ModelTelefone> retorno = new ArrayList<ModelTelefone>();
+		String sql = "select * from telefone where usuario_pai_id =?";
+
+		PreparedStatement prepareSql = connection.prepareStatement(sql);
+		prepareSql.setLong(1, idUserPai);
+		ResultSet rs = prepareSql.executeQuery();
+
+		while (rs.next()) {
+
+			ModelTelefone modelTelefone = new ModelTelefone();
+
+			modelTelefone.setId(rs.getLong("id"));
+			modelTelefone.setNumero(rs.getString("numero"));
+			modelTelefone.setUsuario_cadastro_id(this.consultaUsuarioID(rs.getLong("usuario_cadastro_id")));
+			modelTelefone.setUsuario_pai_id(this.consultaUsuarioID(rs.getLong("usuario_pai_id")));
+
+			retorno.add(modelTelefone);
+
+		}
+		return retorno;
 	}
 
 }

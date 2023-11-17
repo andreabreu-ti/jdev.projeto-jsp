@@ -50,7 +50,7 @@
                                                     
                                                     	<form class="form-material" action="<%= request.getContextPath()%>/ServletUsuarioController" method="get" id="formUser">
                                                     	
-                                                    		<input type="hidden" name="acao" value="imprimirRelatorioUser"> 
+                                                    		<input type="hidden" id="acaoRelatorioImprimirTipo" name="acao" value="imprimirRelatorioUser"> 
                                                     		                                                    	
 															  <div class="form-row align-items-center">
 															    
@@ -66,13 +66,15 @@
 															    
 															    
 															    <div class="col-auto">
-															      <button type="submit" class="btn btn-primary mb-2">Imprimir Relatório</button>
+															      <button type="button" onclick="imprimirHtml();" class="btn btn-primary mb-2">Imprimir Relatório</button>
+															      <button type="button" onclick="imprimirPdf();" class="btn btn-primary mb-2">Imprimir PDF</button>
+															      <button type="button" onclick="imprimirExcel();" class="btn btn-primary mb-2">Imprimir Excel</button>
 															    </div>
 															  </div>
                                                     	
                                                     	</form>
                                                     	
-														<div style="height: 600px; overflow: scroll;">
+														<div style="height: 500px; overflow: scroll;">
 															<table class="table" id="tabelaResultadosview">
 															  <thead>
 															    <tr>
@@ -87,7 +89,32 @@
 															  		<tr>
 															  			<td><c:out value="${ml.id}"></c:out></td>
 															  			<td><c:out value="${ml.nome}"></c:out></td>
-															  		</tr>	
+															  		</tr>
+															  		
+															  		
+															  		<c:forEach items="${ml.telefones}" var="fone">
+															  		
+															  			<tr>
+															  			
+															  				<td></td>
+															  				<td style="font-size: 10px"><c:out value="${fone.numero}"></c:out></td>
+															  				
+															  			</tr>
+															  		
+															  		</c:forEach>
+															  		
+															  		<!-- 
+															  		<tr>
+															  			<td></td>
+															  			
+															  			<td style="font-size: 12px">
+															  				<textarea rows="8" cols="80">${ml.mostraTelefoneRel}</textarea>
+															  			</td>
+															  					
+															  		</tr>
+															  		-->
+															  		
+															  			
 															  	</c:forEach> 
 															  	 
 															  </tbody>
@@ -115,6 +142,27 @@
     <jsp:include page="javascriptfile.jsp"></jsp:include>
     
     <script type="text/javascript">
+    
+    	function imprimirHtml() {
+			
+    		document.getElementById("acaoRelatorioImprimirTipo").value = 'imprimirRelatorioUser';
+    		$("#formUser").submit();
+    		
+		}
+    	function imprimirPdf() {
+			
+    		document.getElementById("acaoRelatorioImprimirTipo").value = 'imprimirRelatorioPDF';
+    		$("#formUser").submit();
+    		return false
+    		
+		}
+    	function imprimirExcel() {
+			
+    		document.getElementById("acaoRelatorioImprimirTipo").value = 'imprimirRelatorioExcel';
+    		$("#formUser").submit();
+    		return false
+    		
+		}
     
 		$(function() {
 		 	  

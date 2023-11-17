@@ -115,3 +115,9 @@ create table telefone (
 --Aula 22.73
 ALTER TABLE IF EXISTS public.model_login
     ADD COLUMN datanascimento date;
+    
+ 
+-------------------------------------------------------------------------  
+--Aula 22.78
+
+alter table model_login add column rendamensal double precision

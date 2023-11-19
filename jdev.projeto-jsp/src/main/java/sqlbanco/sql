@@ -121,3 +121,8 @@ ALTER TABLE IF EXISTS public.model_login
 --Aula 22.78
 
 alter table model_login add column rendamensal double precision
+
+
+-------------------------------------------------------------------------  
+--Aula 22.89
+SELECT avg(rendamensal) as media_salarial, perfil FROM model_login where usuario_id = 1 group by perfil

@@ -159,7 +159,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				request.setAttribute("dataFinal", dataFinal);
 
 				request.getRequestDispatcher("principal/reluser.jsp").forward(request, response);
-				
+
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioPDF")
 					|| acao.equalsIgnoreCase("imprimirRelatorioExcel")) {
 
@@ -171,7 +171,8 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				if (dataInicial == null || dataInicial.isEmpty() && dataFinal == null || dataFinal.isEmpty()) {
 					modelLogins = daoUsuarioRepository.consultaUsuarioListRel(super.getUserLogado(request));
 				} else {
-					modelLogins = daoUsuarioRepository.consultaUsuarioListRel(super.getUserLogado(request), dataInicial,dataFinal);
+					modelLogins = daoUsuarioRepository.consultaUsuarioListRel(super.getUserLogado(request), dataInicial,
+							dataFinal);
 				}
 
 				HashMap<String, Object> params = new HashMap<String, Object>();
@@ -179,23 +180,22 @@ public class ServletUsuarioController extends ServletGenericUtil {
 
 				byte[] relatorio = null;
 				String extensal = "";
-				
-				if (acao.equalsIgnoreCase("imprimirRelatorioPDF")) {
-					
-					relatorio = new ReportUtil().geraRelatorioPDF(modelLogins, "reluser-jsp", params,request.getServletContext());
-					extensal = "pdf";
-				}else 
-					if (acao.equalsIgnoreCase("imprimirRelatorioExcel")) {
-						
-						relatorio = new ReportUtil().geraRelatorioExcel(modelLogins, "reluser-jsp", params,request.getServletContext());
-						extensal = "xls";
-						
-						
-					}
-				
-				
 
-				response.setHeader("Content-Disposition", "attachment;filename=arquivo."+extensal);
+				if (acao.equalsIgnoreCase("imprimirRelatorioPDF")) {
+
+					relatorio = new ReportUtil().geraRelatorioPDF(modelLogins, "reluser-jsp", params,
+							request.getServletContext());
+					extensal = "pdf";
+					
+				} else if (acao.equalsIgnoreCase("imprimirRelatorioExcel")) {
+
+					relatorio = new ReportUtil().geraRelatorioExcel(modelLogins, "reluser-jsp", params,
+							request.getServletContext());
+					extensal = "xls";
+
+				}
+
+				response.setHeader("Content-Disposition", "attachment;filename=arquivo." + extensal);
 				response.getOutputStream().write(relatorio);
 			}
 

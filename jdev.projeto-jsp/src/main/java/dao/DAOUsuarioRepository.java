@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import beandto.BeanDtoGraficoSalarioUser;
 import connection.SingleConnectionBanco;
 import model.ModelLogin;
 import model.ModelTelefone;
@@ -22,6 +23,39 @@ public class DAOUsuarioRepository {
 		connection = SingleConnectionBanco.getConnection();
 
 	}
+	
+	
+	
+	public BeanDtoGraficoSalarioUser montarGrafioMediaSalario(Long userLogado) throws Exception {
+		
+		String sql = "SELECT avg(rendamensal) as media_salarial, perfil FROM model_login where usuario_id = ? group by perfil";
+		
+		PreparedStatement prepareSql = connection.prepareStatement(sql);
+		prepareSql.setLong(1, userLogado);
+		
+		ResultSet resultSet = prepareSql.executeQuery();
+		
+		List<String> perfis = new ArrayList<String>();
+		List<Double> salarios = new ArrayList<Double>();
+		
+		BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = new BeanDtoGraficoSalarioUser();
+		
+		while (resultSet.next()) {
+			
+			Double media_salarial = resultSet.getDouble("media_salarial");
+			String perfil = resultSet.getString("perfil");
+			
+			perfis.add(perfil);
+			salarios.add(media_salarial);
+		}
+		
+		beanDtoGraficoSalarioUser.setPerfis(perfis);
+		beanDtoGraficoSalarioUser.setSalarios(salarios);
+		
+		return beanDtoGraficoSalarioUser;
+		
+	}
+	
 
 	/*
 	 * Método para INSERIR e ALTERAR usuário

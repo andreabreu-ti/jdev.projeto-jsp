@@ -36,7 +36,6 @@ public class ReportUtil implements Serializable {
 
 	}
 
-	@SuppressWarnings({ "deprecation", "deprecation" })
 	public byte[] geraRelatorioPDF(List listaDado, String nomeRelatorio, HashMap<String, Object> params,
 			ServletContext servletContext) throws Exception {
 
@@ -44,33 +43,42 @@ public class ReportUtil implements Serializable {
 
 		String caminhoJasper = servletContext.getRealPath("relatorio") + File.separator + nomeRelatorio + ".jasper";
 
+		//JasperPrint impressoraJasper = JasperFillManager.fillReport(caminhoJasper, new HashMap(), jrbcds);
+		
 		JasperPrint impressoraJasper = JasperFillManager.fillReport(caminhoJasper, params, jrbcds);
 
-		@SuppressWarnings("deprecation")
-		JRExporter exporter = new JRXlsExporter(); // Excel
-
-		exporter.setParameter(JRExporterParameter.JASPER_PRINT, impressoraJasper);
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
-
-		exporter.exportReport();
-
-		return baos.toByteArray();
+		return JasperExportManager.exportReportToPdf(impressoraJasper);
 
 	}
 
-	public byte[] geraRelatorioExcel(List listaDado, String nomeRelatorio, HashMap<String, Object> params, ServletContext servletContext)
-			throws Exception {
+	public byte[] geraRelatorioExcel(List listaDado, String nomeRelatorio, HashMap<String, Object> params,
+			ServletContext servletContext) throws Exception {
 
 		JRBeanCollectionDataSource jrbcds = new JRBeanCollectionDataSource(listaDado);
 
 		String caminhoJasper = servletContext.getRealPath("relatorio") + File.separator + nomeRelatorio + ".jasper";
 
-		JasperPrint impressoraJasper = JasperFillManager.fillReport(caminhoJasper, new HashMap(), jrbcds);
+		System.out.println("Parar");
+		
+	//	JasperPrint impressoraJasper = JasperFillManager.fillReport(caminhoJasper, new HashMap(), jrbcds);
+		
+		JasperPrint impressoraJasper = JasperFillManager.fillReport(caminhoJasper, params, jrbcds);
 
-		return JasperExportManager.exportReportToPdf(impressoraJasper);
+
+		
+		JRExporter exporter = new JRXlsExporter(); //Excel
+		
+		exporter.setParameter(JRExporterParameter.JASPER_PRINT, impressoraJasper);
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
+		
+		exporter.exportReport();
+		
+		return baos.toByteArray();
 
 	}
+
 
 }

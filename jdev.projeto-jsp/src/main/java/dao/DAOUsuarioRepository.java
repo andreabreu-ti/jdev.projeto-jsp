@@ -23,39 +23,68 @@ public class DAOUsuarioRepository {
 		connection = SingleConnectionBanco.getConnection();
 
 	}
-	
-	
-	
-	public BeanDtoGraficoSalarioUser montarGrafioMediaSalario(Long userLogado) throws Exception {
-		
-		String sql = "SELECT avg(rendamensal) as media_salarial, perfil FROM model_login where usuario_id = ? group by perfil";
-		
+
+	public BeanDtoGraficoSalarioUser montarGrafioMediaSalario(Long userLogado, String dataInicial, String dataFinal) throws Exception {
+
+		String sql = "SELECT avg(rendamensal) as media_salarial, perfil FROM model_login where usuario_id = ? and datanascimento >= ? and datanascimento <= ? group by perfil";
+
 		PreparedStatement prepareSql = connection.prepareStatement(sql);
+
 		prepareSql.setLong(1, userLogado);
-		
+		prepareSql.setDate(2, Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataInicial))));
+		prepareSql.setDate(3, Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataFinal))));
+
 		ResultSet resultSet = prepareSql.executeQuery();
-		
+
 		List<String> perfis = new ArrayList<String>();
 		List<Double> salarios = new ArrayList<Double>();
-		
+
 		BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = new BeanDtoGraficoSalarioUser();
-		
+
 		while (resultSet.next()) {
-			
+
 			Double media_salarial = resultSet.getDouble("media_salarial");
 			String perfil = resultSet.getString("perfil");
-			
+
 			perfis.add(perfil);
 			salarios.add(media_salarial);
 		}
-		
+
 		beanDtoGraficoSalarioUser.setPerfis(perfis);
 		beanDtoGraficoSalarioUser.setSalarios(salarios);
-		
+
 		return beanDtoGraficoSalarioUser;
-		
 	}
-	
+
+	public BeanDtoGraficoSalarioUser montarGrafioMediaSalario(Long userLogado) throws Exception {
+
+		String sql = "SELECT avg(rendamensal) as media_salarial, perfil FROM model_login where usuario_id = ? group by perfil";
+
+		PreparedStatement prepareSql = connection.prepareStatement(sql);
+		prepareSql.setLong(1, userLogado);
+
+		ResultSet resultSet = prepareSql.executeQuery();
+
+		List<String> perfis = new ArrayList<String>();
+		List<Double> salarios = new ArrayList<Double>();
+
+		BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = new BeanDtoGraficoSalarioUser();
+
+		while (resultSet.next()) {
+
+			Double media_salarial = resultSet.getDouble("media_salarial");
+			String perfil = resultSet.getString("perfil");
+
+			perfis.add(perfil);
+			salarios.add(media_salarial);
+		}
+
+		beanDtoGraficoSalarioUser.setPerfis(perfis);
+		beanDtoGraficoSalarioUser.setSalarios(salarios);
+
+		return beanDtoGraficoSalarioUser;
+
+	}
 
 	/*
 	 * Método para INSERIR e ALTERAR usuário

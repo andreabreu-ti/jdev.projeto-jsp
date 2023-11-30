@@ -1,5 +1,4 @@
 # Projeto JSP com Maven
-[![NPM](https://img.shields.io/npm/l/react)]() 
 [![Twitter Badge](https://badgen.net/badge/icon/twitter?icon=twitter&label)](https://twitter.com/andre_abreuu)
 
 Servlets com JavaServer Pages (JSP) e JDBC com SQL e Java

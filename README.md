@@ -10,7 +10,7 @@ Servlets com JavaServer Pages (JSP) e JDBC com SQL e Java
 [![Postgresql Badge](https://badgen.net/badge/icon/postgresql?icon=postgresql&label)]()
 [![Maven Badge](https://badgen.net/badge/icon/maven?icon=maven&label)]()
 
-Um sistema de cadastro de usuários desenvolvido no curso de JSP/JDBC com um crud completo, trabalhando com reaproveitamento de templates, variáveis diversas, consumo de API WebService via javascript (ViaCep) , paginação...
+Um sistema de cadastro de usuários desenvolvido no curso de JSP/JDBC com um crud completo, trabalhando com reaproveitamento de templates, variáveis diversas, relatórios, gráfico, consumo de API WebService via javascript (ViaCep) , paginação...
 
 # Tecnologias utilizadas
 
